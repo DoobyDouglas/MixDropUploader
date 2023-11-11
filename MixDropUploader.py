@@ -83,21 +83,12 @@ def post(API_MAIL, API_KEY, event):
         'key': API_KEY,
     }
     response = requests.post(
-        URL_DICT['post'],
+        'https://ul.mixdrop.ag/api',
         data=data,
         files=files,
     )
-    fileref = response.json()['result']['fileref']
-    params = {
-        'email': API_MAIL,
-        'key': API_KEY,
-        'ref[]': [fileref],
-    }
-    response = requests.get(URL_DICT['get'], params=params)
-    response = (
-        response.json()['result'][fileref]['url'].replace(D_LINK, E_LINK)
-    )
-    update_json(name, response)
+    embedurl = response.json()['result']['embedurl']
+    update_json(name, embedurl)
     read_json()
 
 
@@ -128,7 +119,7 @@ def read_json():
 master = TkinterDnD.Tk()
 master.geometry(set_geometry(master))
 master.resizable(False, False)
-master.title('MixDropUploader v0.03')
+master.title('MixDropUploader v0.04')
 master.drop_target_register(DND_FILES)
 master.dnd_bind('<<Drop>>', post_thread)
 style = ttk.Style()
@@ -144,13 +135,6 @@ left_text.place(relx=0.49, rely=0.44, anchor="e")
 
 right_text = tkinter.Text(master, width=40, height=20, state='disabled')
 right_text.place(relx=0.51, rely=0.44, anchor="w")
-
-D_LINK = 'https://mixdrop.co/f/'
-E_LINK = 'https://mixdrop.co/e/'
-URL_DICT = {
-    'post': 'https://ul.mixdrop.co/api',
-    'get': 'https://api.mixdrop.co/fileinfo2'
-}
 
 
 master.mainloop()
